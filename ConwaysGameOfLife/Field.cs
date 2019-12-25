@@ -12,11 +12,15 @@ namespace ConwaysGameOfLife
         public enum FieldStatus
         {
             Infinity,
-            Dead
+            Dead,
+            NotSet
         }
 
         /// <summary> Статус игрового поля</summary>
         public FieldStatus Status { get; private set; }
+
+        /// <summary> Количество сгенерированных поколений</summary>
+        public int Generations { get; private set; }
 
         /// <summary> Все клетки игрового поля</summary>
         List<Cell> Cells;
@@ -34,6 +38,8 @@ namespace ConwaysGameOfLife
             Cells = new List<Cell>();
             this.Length = Length;
             SetStartField();
+            Generations = 0;
+            Status = FieldStatus.NotSet;
         }
 
         /// <summary> Устанавливает изначальное игровое поле</summary>
@@ -59,22 +65,29 @@ namespace ConwaysGameOfLife
             }
         }
 
-        /// <summary> Устанавливает состояния ячеек после каждого раунда</summary>
-        public void SetCellsStates()
+        /// <summary> Генерирует новое состояние клеток исходя из их расположения</summary>
+        public void GenerateGeneration()
         {
+            var WillDie = new List<Cell>();
+            var WillAlive = new List<Cell>();
             foreach (var cell in Cells)
             {
                 if (cell.Alive)
                 {
-                    if (cell.NearestAlives != 2 || cell.NearestAlives != 3)
-                        cell.Alive = false;
+                    if (cell.NearestAlives != 2 && cell.NearestAlives != 3)
+                        WillDie.Add(cell);
                 }
                 else
                 {
                     if (cell.NearestAlives == 3)
-                        cell.Alive = true;
+                        WillAlive.Add(cell);
                 }
             }
+            foreach (var cell in WillAlive) 
+                cell.Alive = true;
+            foreach (var cell in WillDie) 
+                cell.Alive = false;
+            Generations++;
         }
 
         /// <summary> Устанавливает статус игрового поля</summary>

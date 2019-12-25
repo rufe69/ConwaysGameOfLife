@@ -7,48 +7,41 @@ namespace ConwaysGameOfLife
     /// <summary> Класс игры</summary>
     class Game
     {
-        Field field;
+        public Field Field { get; }
+
         FieldArchive archive;
+
+        /// <summary> Возвращает статус игры true - сыграна, false - не сыграна</summary>
         public bool Played { get; private set; }
-        public int Generations { get; private set; }
-        public Field.FieldStatus FieldStatus => field.Status;
 
         public Game(Field Field)
         {
-            field = Field;
+            this.Field = Field;
             archive = new FieldArchive();
             Played = false;
-            Generations = 0;
         }
 
-        public string Start()
+        public Field NextGeneration()
         {
-            try
+            Field.GenerateGeneration();
+            var fieldIsAlive = Field.AliveCells != 0;
+            var fieldRepeat = archive.Contains(Field);
+
+            if (fieldIsAlive && !fieldRepeat)
             {
-                if (Played)
-                    return "Данная игра уже сыграна! Начните новую игру!";
-
-                
-                while (field.AliveCells != 0 || !archive.Contains(field))
-                {
-                    field.SetCellsStates();
-                    archive.Add(field);
-                    Generations++;
-                }
-
+                archive.Add(Field);
+            }
+            else
+            {
                 Played = true;
 
-                if (field.AliveCells == 0)
-                    field.SetFieldStatus(Field.FieldStatus.Dead);
-                else if (archive.Contains(field))
-                    field.SetFieldStatus(Field.FieldStatus.Infinity);
+                if (!fieldIsAlive)
+                    Field.SetFieldStatus(Field.FieldStatus.Dead);
+                else if (fieldRepeat)
+                    Field.SetFieldStatus(Field.FieldStatus.Infinity);
+            }
 
-                return "Error";
-            }
-            catch(Exception err)
-            {
-                return $"Ошибка игры! Сообщение: {err.Message}";
-            }
+            return Field;
         }
     }
 }
