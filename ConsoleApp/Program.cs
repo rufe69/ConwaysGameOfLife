@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApp.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,26 +10,17 @@ namespace ConwaysGameOfLife
     {
         static void Main(string[] args)
         {
+            var menu = new Menu();
+            menu.AddItem(new CustomGameMenuItem("1"));
+            menu.AddItem(new RandomGameMenuItem("2"));
+            menu.AddItem(new RulesMenuItem("3"));
+            menu.AddItem(new ExitMenuItem("4"));
+
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("Игра \"Жизнь\" Джона Конвея");
-                Console.WriteLine("Меню:");
-                Console.WriteLine("1 - установить игровое поле");
-                Console.WriteLine("2 - случайно сгенерированное поле");
-                Console.WriteLine("3 - правила игры");
-                Console.WriteLine("4 - выход");
-
-                var choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1": StartCustomGame(); break;
-                    case "2": StartRandomGame(); break;
-                    case "3": ShowRules(); break;
-                    case "4": Environment.Exit(0); break;
-                    default: MenuError(); break;
-                }
+                menu.Show();
+                var itemId = Console.ReadLine();
+                menu.SelectItem(itemId);
             }
         }
 
@@ -56,54 +48,10 @@ namespace ConwaysGameOfLife
             }
         }
 
-        static void ShowRules()
-        {
-            Console.Clear();
-            Console.WriteLine("Правила");
-            ExitToMain();
-        }
-
-        static void MenuError()
-        {
-            Console.Clear();
-            Console.WriteLine("Выберите корректный пункт меню!");
-            ExitToMain();
-        }
-
-        static void ExitToMain()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Нажмите любую кнопку, чтобы вернуться в главное меню");
-            Console.ReadKey();
-        }
-
-        static void StartCustomGame()
-        {
-            Console.Clear();
-            var field = new Field(10);
-            field[0, 2].Alive = true;
-            field[1, 0].Alive = true;
-            field[1, 2].Alive = true;
-            field[2, 1].Alive = true;
-            field[2, 2].Alive = true;
-            StartGame(field);
-            ExitToMain();
-        }
 
         static void StartRandomGame()
         {
-            Console.Clear();
-            Console.WriteLine("Введите длину поля");
-            var length = Console.ReadLine();
-            var field = new Field(int.Parse(length));
-
-            var rnd = new Random();
-            for (int i = 0; i < field.Length; i++)
-                for (int j = 0; j < field.Length; j++)
-                    field[i, j].Alive = rnd.Next(0, 2) == 0 ? false : true;
-
-            StartGame(field);
-            ExitToMain();
+            
         }
 
 
