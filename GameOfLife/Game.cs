@@ -5,7 +5,7 @@ using System.Text;
 namespace ConwaysGameOfLife
 {
     /// <summary> Класс игры</summary>
-    class Game
+    public class Game
     {
         public Field Field { get; }
 
@@ -13,7 +13,7 @@ namespace ConwaysGameOfLife
 
         /// <summary> Возвращает статус игры true - сыграна, false - не сыграна</summary>
         public bool Played { get; private set; }
-
+        
         public Game(Field Field)
         {
             this.Field = Field;
