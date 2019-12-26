@@ -7,6 +7,7 @@ namespace ConwaysGameOfLife
     /// <summary> Класс игры</summary>
     public class Game
     {
+        /// <summary> Поле, на котором происходит игра</summary>
         public Field Field { get; }
 
         FieldArchive archive;
@@ -14,6 +15,8 @@ namespace ConwaysGameOfLife
         /// <summary> Возвращает статус игры true - сыграна, false - не сыграна</summary>
         public bool Played { get; private set; }
         
+        /// <summary> Конструктор</summary>
+        /// <param name="Field"> Поле, на котором будет происходить игра</param>
         public Game(Field Field)
         {
             this.Field = Field;
@@ -21,6 +24,8 @@ namespace ConwaysGameOfLife
             Played = false;
         }
 
+        /// <summary> Сгенерировать следующее поколение клеток</summary>
+        /// <returns> Возвращает новое сгенерированное поле</returns>
         public Field NextGeneration()
         {
             Field.GenerateGeneration();
