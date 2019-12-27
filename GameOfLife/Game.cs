@@ -10,6 +10,8 @@ namespace ConwaysGameOfLife
         /// <summary> Поле, на котором происходит игра</summary>
         public Field Field { get; }
 
+        public int Generations => Field.Generation;
+
         FieldArchive archive;
 
         /// <summary> Возвращает статус игры true - сыграна, false - не сыграна</summary>

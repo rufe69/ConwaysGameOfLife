@@ -56,7 +56,7 @@ namespace ConwaysGameOfLife
 
 
 
-        /*static void DrawChar(char ch, int x, int y) => Map[x, y] = ch;
+        /*
 
         static void CursorMoving(ConsoleKeyInfo keyInfo)
         {

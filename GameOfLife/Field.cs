@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Text;
 namespace ConwaysGameOfLife
 {
     /// <summary> Класс, отвечающий за игровое поле</summary>
-    public class Field
+    public class Field:IEnumerable
     {
         /// <summary> Перечисление статусов поля</summary>
         public enum FieldStatus
@@ -20,7 +21,7 @@ namespace ConwaysGameOfLife
         public FieldStatus Status { get; private set; }
 
         /// <summary> Количество сгенерированных поколений</summary>
-        public int Generations { get; private set; }
+        public int Generation { get; private set; }
 
         /// <summary> Все клетки игрового поля</summary>
         List<Cell> Cells;
@@ -38,7 +39,7 @@ namespace ConwaysGameOfLife
             Cells = new List<Cell>();
             this.Length = Length;
             SetStartField();
-            Generations = 0;
+            Generation = 0;
             Status = FieldStatus.NotSet;
         }
 
@@ -87,12 +88,15 @@ namespace ConwaysGameOfLife
                 cell.Alive = true;
             foreach (var cell in WillDie) 
                 cell.Alive = false;
-            Generations++;
+            Generation++;
         }
 
         /// <summary> Устанавливает статус игрового поля</summary>
         /// <param name="status"> Статус игрового поля</param>
         public void SetFieldStatus(FieldStatus status) => Status = status;
+
+        /// <summary> Возвращяет итератор для циклов типа foreach</summary>
+        public IEnumerator GetEnumerator() => Cells.GetEnumerator();
 
         /// <summary> Индексатор возвращающий ячейку с координатами x и y</summary>
         /// <remarks>

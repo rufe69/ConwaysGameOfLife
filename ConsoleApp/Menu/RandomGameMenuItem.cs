@@ -22,7 +22,19 @@ namespace ConsoleApp.Menu
                 for (int j = 0; j < field.Length; j++)
                     field[i, j].Alive = rnd.Next(0, 2) == 0 ? false : true;
 
-            //StartGame(field);
+
+
+            var game = new Game(field);
+            Console.Clear();
+            var drawer = new FieldDrawer(field);
+            drawer.DrawFieldBorders();
+            drawer.DrawField();
+            while (!game.Played)
+            {
+                game.NextGeneration();
+                drawer.DrawField();
+                Thread.Sleep(100);
+            }
         }
     }
 }
