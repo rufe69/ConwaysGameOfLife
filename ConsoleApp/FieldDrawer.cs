@@ -25,7 +25,7 @@ namespace ConsoleApp
         public void DrawFieldBorders()
         {
             var length = field.Length + shift;
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < length + 1; i++)
             {
                 DrawChar('#', i, 0);
                 DrawChar('#', i, length);
@@ -43,7 +43,7 @@ namespace ConsoleApp
                 DrawChar(cell.Alive ? '*' : ' ', cell.X + shift, cell.Y + shift);
         }
 
-        private void DrawChar(char ch, int x, int y)
+        protected virtual void DrawChar(char ch, int x, int y)
         {
             var length = field.Length + shift;
             Console.SetCursorPosition(x, y);

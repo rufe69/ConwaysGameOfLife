@@ -26,7 +26,7 @@ namespace ConsoleApp.Menu
 
             var game = new Game(field);
             Console.Clear();
-            var drawer = new FieldDrawer(field);
+            var drawer = new ColoredFieldDrawer(field, ConsoleColor.Green);
             drawer.DrawFieldBorders();
             drawer.DrawField();
             while (!game.Played)
