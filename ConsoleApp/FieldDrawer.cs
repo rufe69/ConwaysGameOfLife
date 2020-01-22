@@ -24,6 +24,7 @@ namespace ConsoleApp
 
         public void DrawFieldBorders()
         {
+            Console.Clear();
             var length = field.Length + shift;
             for (int i = 0; i < length + 1; i++)
             {
