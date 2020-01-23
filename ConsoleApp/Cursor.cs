@@ -9,7 +9,7 @@ namespace ConsoleApp
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public ConsoleColor Color { get; }
+        public static ConsoleColor Color = ConsoleColor.Gray;
 
         private int min;
         private int max;
@@ -20,7 +20,6 @@ namespace ConsoleApp
             Y = y;
             this.min = minPosition;
             this.max = maxPosition;
-            Color = ConsoleColor.Gray;
         }
 
         public void MoveLeft() { if (X!=min) X--; }

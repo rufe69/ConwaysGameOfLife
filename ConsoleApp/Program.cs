@@ -1,16 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ConwaysGameOfLife;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ConwaysGameOfLife;
 
 namespace ConsoleApp
 {
     class Program
     {
+        static ConsoleColor BorderColor = ConsoleColor.Red;
+        static ConsoleColor CellColor = ConsoleColor.Green;
+        static ConsoleColor CursorColor = ConsoleColor.Gray;
+        static int FieldShift = 1;
+        static char BorderChar = '#';
+        static char CellChar = '*';
+
+        //Чем меньше speed, тем быстрее игра
+        static int Speed = 100;
+
+
         static void Main(string[] args)
         {
+            FieldDrawer.Shift = FieldShift;
+            FieldDrawer.BorderChar = BorderChar;
+            FieldDrawer.CellChar = CellChar;
+            FieldDrawer.CursorColor = CursorColor;
+            ColoredFieldDrawer.CellColor = CellColor;
+            ColoredFieldDrawer.BorderColor = BorderColor;
+
             Console.CursorVisible = false;
             while (true)
             {
@@ -48,7 +64,7 @@ namespace ConsoleApp
                 {
                     game.NextGeneration();
                     drawer.DrawField();
-                    Thread.Sleep(100);
+                    Thread.Sleep(Speed);
 
                     if (cancelToken.IsCancellationRequested)
                     {
@@ -99,12 +115,10 @@ namespace ConsoleApp
                 var keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.Enter)
                     break;
-                if(keyInfo.Key == ConsoleKey.Spacebar)
+                if (keyInfo.Key == ConsoleKey.Spacebar)
                 {
-                    var shift = drawer.FieldStartPosition;
-                    var cell = field[cursor.X - shift, cursor.Y - shift];
+                    var cell = field[cursor.X - FieldShift, cursor.Y - FieldShift];
                     cell.Alive = cell.Alive ? false : true;
-                    continue;
                 }
 
                 switch (keyInfo.Key)
@@ -112,7 +126,7 @@ namespace ConsoleApp
                     case ConsoleKey.UpArrow: cursor.MoveUp(); break;
                     case ConsoleKey.DownArrow: cursor.MoveDown(); break;
                     case ConsoleKey.LeftArrow: cursor.MoveLeft(); break;
-                    case ConsoleKey.RightArrow: cursor.MoveRight(); ; break;
+                    case ConsoleKey.RightArrow: cursor.MoveRight(); break;
                 }
                 drawer.DrawField();
             }
@@ -131,7 +145,7 @@ namespace ConsoleApp
                 }
                 catch
                 {
-                    ShowError("Неккоректная длин поля!");
+                    ShowError("Неккоректная длинна поля!");
                 }
             }
         }
@@ -144,7 +158,7 @@ namespace ConsoleApp
                 Console.WriteLine("Использовать цветное поле? y - да, n - нет");
                 var isColored = Console.ReadLine();
                 if (isColored == "Y" || isColored == "y")
-                    return new ColoredFieldDrawer(field, ConsoleColor.Green);
+                    return new ColoredFieldDrawer(field);
                 else if (isColored == "N" || isColored == "n")
                     return new FieldDrawer(field);
             }
@@ -157,61 +171,5 @@ namespace ConsoleApp
             Console.WriteLine(errorMessage);
             Console.ReadKey();
         }
-
-
-
-        /*static void DrawChar(char ch, int x, int y) => Map[x, y] = ch;
-
-        
-
-        static void SetGame()
-        {
-            while (true)
-            {
-                Console.SetCursorPosition(x, y);
-                var keyinfo = Console.ReadKey();
-                if (keyinfo.Key == ConsoleKey.Escape) break;
-                if (keyinfo.Key == ConsoleKey.Spacebar)
-                {
-                    DrawChar('*', x, y);
-                    continue;
-                }
-
-                CursorMoving(keyinfo);
-                RefreshMap();
-            }
-        }
-
-        static void DrawField(int width, int height)
-        {
-            for (int i = 0; i < width; i++)
-            {
-                DrawChar('#', i, 0);
-                DrawChar('#', i, height - 1);
-            }
-            for (int i = 0; i < height; i++)
-            {
-                DrawChar('#', 0, i);
-                DrawChar('#', width - 1, i);
-            }
-
-            Console.SetCursorPosition(1, 1);
-        }
-
-        static void RefreshMap()
-        {
-            Console.Clear();
-            for (int i = 0; i < Map.GetLength(0); i++)
-            {
-                for (int j = 0; j < Map.GetLength(1); j++)
-                {
-                    Console.SetCursorPosition(i, j);
-                    Console.Write(Map[i, j]);
-               }
-            }
-        }*/
     }
-
-   
-    
 }

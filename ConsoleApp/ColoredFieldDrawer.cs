@@ -7,14 +7,15 @@ namespace ConsoleApp
 {
     class ColoredFieldDrawer : FieldDrawer
     {
-        private ConsoleColor _color;
+        public static ConsoleColor CellColor;
+        public static ConsoleColor BorderColor;
 
-        public ColoredFieldDrawer(Field Field, ConsoleColor color) : base(Field) => _color = color;
+        public ColoredFieldDrawer(Field Field) : base(Field) { }
 
         protected override void DrawChar(char ch, int x, int y)
         {
-            if (ch == '*') Console.BackgroundColor = _color;
-            if (ch == '#') Console.BackgroundColor = ConsoleColor.Red;
+            if (ch == CellChar) Console.BackgroundColor = CellColor;
+            if (ch == BorderChar) Console.BackgroundColor = BorderColor;
             ch = ' ';
             base.DrawChar(ch, x, y);
             Console.ResetColor();
