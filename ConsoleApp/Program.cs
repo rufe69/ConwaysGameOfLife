@@ -35,38 +35,43 @@ namespace ConsoleApp
 
         static void StartGame(Field field, FieldDrawer drawer)
         {
-            try
-            {
-                var task = new Task(() =>
-                {
-                    Console.Clear();
-                    drawer.DrawFieldBorders();
-                    drawer.DrawField();
-                    var game = new Game(field);
-                    while (!game.Played)
-                    {
-                        game.NextGeneration();
-                        drawer.DrawField();
-                        Thread.Sleep(100);
-                    }
+            var cancelTknSrc = new CancellationTokenSource();
+            var cancelToken = cancelTknSrc.Token;
 
-                    Console.WriteLine();
-                    Console.WriteLine($"Количество прожитих поколений - {game.Generations}");
-                });
-
-                task.Start();
-            }
-            catch
+            var task = new Task(() =>
             {
                 Console.Clear();
-            }
+                drawer.DrawFieldBorders();
+                drawer.DrawField();
+                var game = new Game(field);
+                while (!game.Played)
+                {
+                    game.NextGeneration();
+                    drawer.DrawField();
+                    Thread.Sleep(100);
+
+                    if (cancelToken.IsCancellationRequested)
+                    {
+                        Console.Clear();
+                        return;
+                    }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine($"Количество прожитых поколений - {game.Generations}");
+            }, cancelToken);
+
+            task.Start();
+            Console.ReadKey();
+            cancelTknSrc.Cancel();
+            task.Wait();
         }
 
         static void StartCustomGame()
         {
             var field = new Field(GetFieldLength());
             var drawer = GetFieldDrawer(field);
-            SetField(field);
+            SetField(field, drawer);
             StartGame(field, drawer);
         }
 
@@ -83,13 +88,47 @@ namespace ConsoleApp
             StartGame(field, drawer);
         }
 
-        static void SetField(Field field)
+        static void SetField(Field field, FieldDrawer drawer)
         {
-            field[0, 2].Alive = true;
-            field[1, 0].Alive = true;
-            field[1, 2].Alive = true;
-            field[2, 1].Alive = true;
-            field[2, 2].Alive = true;
+            drawer.DrawFieldBorders();
+            Console.CursorVisible = true;
+            var startPos = drawer.FieldStartPosition;
+            Console.SetCursorPosition(startPos, startPos);
+
+            while (true)
+            {
+                var x = Console.CursorLeft;
+                var y = Console.CursorTop;
+
+                var keyInfo = Console.ReadKey();
+                if (keyInfo.Key == ConsoleKey.Enter)
+                    break;
+                if(keyInfo.Key == ConsoleKey.Spacebar)
+                {
+                    drawer.DrawPoint(x, y);
+                    continue;
+                }
+
+                CursorMoving(keyInfo, drawer);
+            }
+            Console.CursorVisible = false;
+        }
+
+        static void CursorMoving(ConsoleKeyInfo keyInfo, FieldDrawer drawer)
+        {
+            var y = Console.CursorTop;
+            var x = Console.CursorLeft -1;
+            var min = drawer.FieldStartPosition;
+            var max = min + drawer.FieldLength -1;
+
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.UpArrow: if (y != min) y--; break;
+                case ConsoleKey.DownArrow: if (y != max) y++; break;
+                case ConsoleKey.LeftArrow: if (x != min) x--; break;
+                case ConsoleKey.RightArrow: if (x != max) x++; break;
+            }
+            Console.SetCursorPosition(x, y);
         }
 
         static int GetFieldLength()
@@ -132,18 +171,11 @@ namespace ConsoleApp
             Console.ReadKey();
         }
 
+
+
         /*static void DrawChar(char ch, int x, int y) => Map[x, y] = ch;
 
-        static void CursorMoving(ConsoleKeyInfo keyInfo)
-        {
-            switch (keyInfo.Key)
-            {
-                case ConsoleKey.UpArrow: if (y != 2) y-- ; break;
-                case ConsoleKey.DownArrow: if (y != height) y++ ; break;
-                case ConsoleKey.LeftArrow: if (x != 2) x-- ; break;
-                case ConsoleKey.RightArrow: if (x != width) x++ ; break;
-            }
-        }
+        
 
         static void SetGame()
         {
@@ -188,7 +220,7 @@ namespace ConsoleApp
                 {
                     Console.SetCursorPosition(i, j);
                     Console.Write(Map[i, j]);
-                }
+               }
             }
         }*/
     }

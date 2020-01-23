@@ -8,18 +8,17 @@ namespace ConsoleApp
     class FieldDrawer
     {
 
-        private Field field;
-        private int shift;
+        protected Field field;
+        protected readonly int shift;
+        protected char pointSymbol = '*';
+
+        public int FieldLength => field.Length;
+        public int FieldStartPosition => shift;
 
         public FieldDrawer(Field Field)
         {
             field = Field;
             shift = 1;
-        }
-
-        public static Field CreateField()
-        {
-            throw new Exception();
         }
 
         public void DrawFieldBorders()
@@ -41,7 +40,7 @@ namespace ConsoleApp
         public void DrawField()
         {
             foreach (Cell cell in field)
-                DrawChar(cell.Alive ? '*' : ' ', cell.X + shift, cell.Y + shift);
+                DrawChar(cell.Alive ? pointSymbol : ' ', cell.X + shift, cell.Y + shift);
         }
 
         protected virtual void DrawChar(char ch, int x, int y)
@@ -50,6 +49,18 @@ namespace ConsoleApp
             Console.SetCursorPosition(x, y);
             Console.Write(ch);
             Console.SetCursorPosition(length + 1, length + 1);
+        }
+
+        public virtual void DrawPoint(int x, int y)
+        {
+            var cell = field[x - shift, y - shift];
+            DrawChar(cell.Alive ? pointSymbol : ' ', x, y);
+            Console.SetCursorPosition(x, y);
+        }
+
+        public virtual void DrawCursor(int x, int y)
+        {
+
         }
     }
 }
