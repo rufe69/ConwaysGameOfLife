@@ -19,13 +19,5 @@ namespace ConsoleApp
             base.DrawChar(ch, x, y);
             Console.ResetColor();
         }
-
-        public override void DrawPoint(int x, int y)
-        {
-            var cell = field[x - shift, y - shift];
-            cell.Alive = cell.Alive ? false : true;
-            DrawChar(cell.Alive ? pointSymbol : ' ', x, y);
-            Console.SetCursorPosition(x, y);
-        }
     }
 }

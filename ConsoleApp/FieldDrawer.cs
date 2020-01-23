@@ -11,6 +11,7 @@ namespace ConsoleApp
         protected Field field;
         protected readonly int shift;
         protected char pointSymbol = '*';
+        public Cursor Cursor;
 
         public int FieldLength => field.Length;
         public int FieldStartPosition => shift;
@@ -19,6 +20,7 @@ namespace ConsoleApp
         {
             field = Field;
             shift = 1;
+            Cursor = new Cursor(shift, shift, shift, shift + field.Length -1);
         }
 
         public void DrawFieldBorders()
@@ -51,16 +53,11 @@ namespace ConsoleApp
             Console.SetCursorPosition(length + 1, length + 1);
         }
 
-        public virtual void DrawPoint(int x, int y)
+        public virtual void DrawCursor()
         {
-            var cell = field[x - shift, y - shift];
-            DrawChar(cell.Alive ? pointSymbol : ' ', x, y);
-            Console.SetCursorPosition(x, y);
-        }
-
-        public virtual void DrawCursor(int x, int y)
-        {
-
+            Console.BackgroundColor = Cursor.Color;
+            DrawChar(' ', Cursor.X, Cursor.Y);
+            Console.ResetColor();
         }
     }
 }

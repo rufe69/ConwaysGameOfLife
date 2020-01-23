@@ -91,44 +91,31 @@ namespace ConsoleApp
         static void SetField(Field field, FieldDrawer drawer)
         {
             drawer.DrawFieldBorders();
-            Console.CursorVisible = true;
-            var startPos = drawer.FieldStartPosition;
-            Console.SetCursorPosition(startPos, startPos);
+            var cursor = drawer.Cursor;
 
             while (true)
             {
-                var x = Console.CursorLeft;
-                var y = Console.CursorTop;
-
+                drawer.DrawCursor();
                 var keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.Enter)
                     break;
                 if(keyInfo.Key == ConsoleKey.Spacebar)
                 {
-                    drawer.DrawPoint(x, y);
+                    var shift = drawer.FieldStartPosition;
+                    var cell = field[cursor.X - shift, cursor.Y - shift];
+                    cell.Alive = cell.Alive ? false : true;
                     continue;
                 }
 
-                CursorMoving(keyInfo, drawer);
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.UpArrow: cursor.MoveUp(); break;
+                    case ConsoleKey.DownArrow: cursor.MoveDown(); break;
+                    case ConsoleKey.LeftArrow: cursor.MoveLeft(); break;
+                    case ConsoleKey.RightArrow: cursor.MoveRight(); ; break;
+                }
+                drawer.DrawField();
             }
-            Console.CursorVisible = false;
-        }
-
-        static void CursorMoving(ConsoleKeyInfo keyInfo, FieldDrawer drawer)
-        {
-            var y = Console.CursorTop;
-            var x = Console.CursorLeft -1;
-            var min = drawer.FieldStartPosition;
-            var max = min + drawer.FieldLength -1;
-
-            switch (keyInfo.Key)
-            {
-                case ConsoleKey.UpArrow: if (y != min) y--; break;
-                case ConsoleKey.DownArrow: if (y != max) y++; break;
-                case ConsoleKey.LeftArrow: if (x != min) x--; break;
-                case ConsoleKey.RightArrow: if (x != max) x++; break;
-            }
-            Console.SetCursorPosition(x, y);
         }
 
         static int GetFieldLength()
