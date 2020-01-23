@@ -75,6 +75,7 @@ namespace ConsoleApp
 
                 Console.WriteLine();
                 Console.WriteLine($"Количество прожитых поколений - {game.Generations}");
+                Console.WriteLine(game.Field.Status == Field.FieldStatus.Dead? "Вселенная погибла" : "Жизнь во вселенной бесконечна");
             }, cancelToken);
 
             task.Start();
