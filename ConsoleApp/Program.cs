@@ -1,4 +1,5 @@
 ﻿using ConwaysGameOfLife;
+using GameOfLife;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,8 +75,8 @@ namespace ConsoleApp
                 }
 
                 Console.WriteLine();
-                Console.WriteLine($"Количество прожитых поколений - {game.Generations}");
-                Console.WriteLine(game.Field.Status == Field.FieldStatus.Dead? "Вселенная погибла" : "Жизнь во вселенной бесконечна");
+                Console.WriteLine($"Количество прожитых поколений - {game.Generation}");
+                Console.WriteLine(game.Status == GameStatus.Dead? "Вселенная погибла" : "Жизнь во вселенной бесконечна");
             }, cancelToken);
 
             task.Start();
