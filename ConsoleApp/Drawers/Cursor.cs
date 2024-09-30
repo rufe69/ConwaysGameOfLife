@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ConsoleApp
+namespace ConsoleApp.Drawers
 {
     class Cursor
     {
@@ -18,13 +16,13 @@ namespace ConsoleApp
         {
             X = x;
             Y = y;
-            this.min = minPosition;
-            this.max = maxPosition;
+            min = minPosition;
+            max = maxPosition;
         }
 
-        public void MoveLeft() { if (X!=min) X--; }
-        public void MoveRight() { if (X!=max) X++; }
-        public void MoveUp() { if (Y!=min) Y--; }
-        public void MoveDown() { if (Y!=max) Y++; }
+        public void MoveLeft() { if (X != min) X--; }
+        public void MoveRight() { if (X != max) X++; }
+        public void MoveUp() { if (Y != min) Y--; }
+        public void MoveDown() { if (Y != max) Y++; }
     }
 }

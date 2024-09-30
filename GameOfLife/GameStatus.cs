@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameOfLife
+﻿namespace GameOfLife
 {
-    /// <summary> Перечисление статусов поля</summary>
+    /// <summary>
+    /// Перечисление статусов игры
+    /// </summary>
     public enum GameStatus
     {
         Infinity,

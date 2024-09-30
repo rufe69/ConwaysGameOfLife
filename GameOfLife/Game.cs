@@ -1,87 +1,87 @@
 ﻿using GameOfLife;
-using System;
+using GameOfLife.Archive;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ConwaysGameOfLife
 {
-    /// <summary> Класс игры</summary>
+    /// <summary>
+    /// Класс игры
+    /// </summary>
     public class Game
     {
-        /// <summary> Статус игрового поля</summary>
-        public GameStatus Status { get; set; }
+        public GameState State { get; private set; }
 
-        /// <summary> Поле, на котором происходит игра</summary>
-        public Field Field { get; }
+        /// <summary>
+        /// Игровое поле
+        /// </summary>
+        public Field Field { get; private set; }
 
+        /// <summary>
+        /// Количество сгенерированных поколений
+        /// </summary>
+        public int CurrentGeneration {  get; private set; }
 
-        /// <summary> Количество сгенерированных поколений</summary>
-        public int Generation { get; private set; }
+        private readonly FieldArchive archive;
 
-        FieldArchive archive;
-
-        /// <summary> Возвращает статус игры true - сыграна, false - не сыграна</summary>
-        public bool Played { get; private set; }
-        
-        /// <summary> Конструктор</summary>
-        /// <param name="Field"> Поле, на котором будет происходить игра</param>
-        public Game(Field Field)
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="field">Поле, на котором будет происходить игра</param>
+        public Game(Field field)
         {
-            this.Field = Field;
+            this.Field = field;
+            CurrentGeneration = 0;
             archive = new FieldArchive();
-            Played = false;
-            Generation = 0;
-            Status = GameStatus.NotSet;
+            State = new GameState();
         }
 
-        /// <summary> Сгенерировать следующее поколение клеток</summary>
-        /// <returns> Возвращает новое сгенерированное поле</returns>
+        /// <summary>
+        /// Сгенерировать следующее поколение клеток
+        /// </summary>
+        /// <returns>Возвращает новое сгенерированное поле</returns>
         public Field NextGeneration()
         {
             GenerateGeneration();
-            var fieldIsAlive = Field.AliveCells != 0;
+            var isFieldAlive = Field.AliveCells != 0;
             var fieldRepeat = archive.Contains(Field);
 
-            if (fieldIsAlive && !fieldRepeat)
+            if (isFieldAlive && !fieldRepeat)
             {
                 archive.Add(Field);
             }
             else
             {
-                Played = true;
-
-                if (!fieldIsAlive)
-                    Status = GameStatus.Dead;
-                else if (fieldRepeat)
-                    Status = GameStatus.Infinity;
+                State.EndGame(isFieldAlive ? GameStatus.Infinity : GameStatus.Dead);
             }
 
             return Field;
         }
 
-        /// <summary> Генерирует новое состояние клеток исходя из их расположения</summary>
+        /// <summary>
+        /// Генерирует новое состояние клеток исходя из их расположения
+        /// </summary>
         private void GenerateGeneration()
         {
-            var WillDie = new List<Cell>();
-            var WillAlive = new List<Cell>();
+            var willDie = new List<Cell>();
+            var willAlive = new List<Cell>();
             foreach (Cell cell in Field)
             {
-                if (cell.Alive)
+                if (cell.IsAlive)
                 {
                     if (cell.NearestAlives != 2 && cell.NearestAlives != 3)
-                        WillDie.Add(cell);
+                        willDie.Add(cell);
                 }
                 else
                 {
                     if (cell.NearestAlives == 3)
-                        WillAlive.Add(cell);
+                        willAlive.Add(cell);
                 }
             }
-            foreach (var cell in WillAlive)
-                cell.Alive = true;
-            foreach (var cell in WillDie)
-                cell.Alive = false;
-            Generation++;
+            foreach (var cell in willAlive)
+                cell.IsAlive = true;
+            foreach (var cell in willDie)
+                cell.IsAlive = false;
+            CurrentGeneration++;
         }
     }
 }
